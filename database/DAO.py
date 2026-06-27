@@ -1,4 +1,5 @@
 from database.DB_connect import DBConnect
+from model.categoria import Categoria
 
 
 class DAO():
@@ -13,7 +14,7 @@ class DAO():
         results = []
 
         cursor = conn.cursor(dictionary=True)
-        query = "SELECT distinct (order_date) from orders o order by order_date"
+        query = """SELECT distinct (order_date) from orders o order by order_date"""
 
         cursor.execute(query)
 
@@ -26,3 +27,23 @@ class DAO():
         cursor.close()
         conn.close()
         return first, last
+
+    @staticmethod
+    def getCategories():
+
+        conn = DBConnect.get_connection()
+
+        results = []
+
+        cursor = conn.cursor(dictionary=True)
+        query = """ select *
+                    from categories c """
+
+        cursor.execute(query)
+
+        for row in cursor:
+            results.append(Categoria(**row))
+
+        cursor.close()
+        conn.close()
+        return results

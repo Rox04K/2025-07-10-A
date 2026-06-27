@@ -7,3 +7,6 @@ class Model:
 
     def getDateRange(self):
         return DAO.getDateRange()
+
+    def getCategories(self):
+        return DAO.getCategories()
