@@ -137,6 +137,8 @@ class Controller:
         for b in cammino:
             self._view.txt_result.controls.append(ft.Text(f'{b}'))
 
+        self._view.update_page()
+
     def setDates(self):
         first, last = self._model.getDateRange()
 

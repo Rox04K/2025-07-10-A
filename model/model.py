@@ -1,3 +1,5 @@
+import copy
+
 import networkx as nx
 
 from database.DAO import DAO
@@ -57,44 +59,27 @@ class Model:
         self._bestPunteggio = 0
 
         parziale = [start]
-        self._ricorsione(parziale, end, soglia)
+        self._ricorsione(parziale, end, 0, soglia)
 
         return self._bestCammino, self._bestPunteggio
 
-    def _ricorsione(self, parziale, end, soglia):
-        ''' CONTROLLO PRIMA SE SONO ALLA FINE, POI NEL CASO CALCOLO I SUCCESSORI '''
+    def _ricorsione(self, parziale, end, pesoCorrente, limite):
+
         if parziale[-1] == end:
-            if len(parziale) > len(self._bestCammino):
-                self._bestCammino = copy.deepcopy(parziale)
-                self._calcolaKm(parziale)
+            if len(parziale) - 1 == limite:
+                if pesoCorrente > self._bestPunteggio:
+                    self._bestPunteggio = pesoCorrente
+                    self._bestCammino = copy.deepcopy(parziale)
+                return
+            else:
+                return
+
+        if len(parziale) - 1 == limite:
             return
 
-        validi = self._getSuccessors(parziale, soglia, end)
-
-        for n in validi:
-            parziale.append(n)
-            self._ricorsione(parziale, end, soglia)
-            parziale.pop()
-
-    def _getSuccessors(self, parziale, soglia, end):
-        ''' END DEVE ESSERE MESSO A PRESCRINDERE QUINDI GLIELO PASSO E LO INSERISCO'''
-        succ = self._grafo.neighbors(parziale[-1])
-        validi = []
-
-        for n in succ:
+        for n in self._grafo.successors(parziale[-1]):
             if n not in parziale:
-                if n == end or n.stars > soglia:
-                    validi.append(n)
-
-        return validi
-
-    def _calcolaKm(self, parziale):
-        ''' IL GRAFO AVEVA COME PESO LA DISTANZA QUINDI LA CALCOLIAMO COME PESO DELL'ARCO '''
-        distanza = 0
-
-        for p in range(len(parziale) - 1):
-            u = parziale[p]
-            v = parziale[p + 1]
-            distanza += self._grafo[u][v]['weight']
-
-        self._bestKm = distanza
+                pesoArco = self._grafo[parziale[-1]][n]['weight']
+                parziale.append(n)
+                self._ricorsione(parziale, end, pesoCorrente + pesoArco, limite)
+                parziale.pop()
