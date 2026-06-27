@@ -53,7 +53,7 @@ class Controller:
         self._view.txt_result.controls.append(ft.Text(f'Date selezionate:'))
         self._view.txt_result.controls.append(ft.Text(f'Start date: {startD}'))
         self._view.txt_result.controls.append(ft.Text(f'End date: {endD}'))
-        self._model.creaGrafo(startD, endD, categoria)
+        self._model.creaGrafo(startD, endD, categoria.category_id)
         self._view.txt_result.controls.append(ft.Text(f'Grafo correttamente creato:', color='green'))
 
         nodi, archi = self._model.getInfo()
